@@ -21,6 +21,8 @@ class Matrix:
             print('This matrices can not multiple')
             quit()
     
+    def __str__(self):
+        return '\n'.join([' '.join([f'{i}' for i in row]) for row in self.result])
 a = [
     [1, 4, 3],
     [2, 5, 4]
@@ -32,8 +34,9 @@ b = [
 ]
 c = Matrix(a, b)
 c.multiple()
-for i in range(len(c.result)):
-    for j in range(len(c.result[i])):
-        print(c.result[i][j], end=" ")
-    print()
+print(c)
+# for i in range(len(c.result)):
+#     for j in range(len(c.result[i])):
+#         print(c.result[i][j], end=" ")
+#     print()
     
