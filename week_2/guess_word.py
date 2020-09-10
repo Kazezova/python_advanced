@@ -1,57 +1,55 @@
 import random
-what_word = random.randint(0,3)
-guess_word = ['python', 'computer', 'telephone', 'mcm']
-# hint = "What would you use to play Doom-2?"
-the_word = guess_word[what_word]
-game_over = False
-board = list("*" * len(the_word))
-data = {'1': 0, '2': 0}
-j = -1
-while not game_over:
-    if ''.join(board) == the_word:
-        print('WIN!')
-        print(data)
-        if data['1'] == data['2']:
-            print('Draw!')
-            break
+def guess_game():
+    questions= {
+        'colibri' : 'This bird can fly backwards.',
+        'snail' : 'These animals, considered a delicacy in some countries, have teeth located on the tongue.',
+        'crocodile' : 'The cubs of this animal acquire sex depending on the ambient temperature.'
+    }
+    data = {'1': 0, '2': 0}
+    secret_word = list(questions.keys())[random.randint(0, len(questions)-1)]
+    board = list("*" * len(secret_word))
+    print(f'\n{questions[secret_word]} What is it?')
+    j = -1
+    while True:
+        if ''.join(board) == secret_word:
+            print(f'\nCongratulations!\n{data}')
+            if data['1'] == data['2']:
+                print('Draw!')
+                break
+            else:
+                print('Winner - player {}'.format([k for k,v in data.items() if v == max(data['1'], data['2'])][0]))
+                break
+        j += 1
+        player = (j%2) + 1
+        point = random.randint(5, 10)
+        print(f"\n-------------------------------------------------\nPlayer {player}. {' '.join(board)}\n{point} points at stake.")
+        user_guess = input("Enter a word or a letter: ").lower()
+        if len(user_guess) == 1:
+            if user_guess in board: 
+                print('This letter already guessed! Next player.')
+                continue
+            for i in range(len(secret_word)):
+                if secret_word[i] == user_guess:
+                    board[i] = user_guess
+            if user_guess not in board:
+                print('Incorrect! Next player.')
+                continue
+            data[str(player)] = data[str(player)] + point
+            print(f'Correct! You get {point} points.')
         else:
-            print('Winner {}'.format([k for k,v in data.items() if v == max(data['1'], data['2'])][0]))
-            break
-    print("")
-    print("------------------------------")
-    print(f"Guess a word: {' '.join(board)}")
-    j += 1
-    player = (j%2) + 1
-    print(f"Player {player}.")
-    user_guess = input("Enter a word or a letter: ")
-    user_guess = user_guess.lower()
-    if len(user_guess) == 1:
-        if user_guess in board: 
-            print('Already guessed!')
-            continue
-        for i in range(len(the_word)):
-            if the_word[i] == user_guess:
-                board[i] = user_guess
-                point = random.randint(5, 10)
-                data[str(player)] = data[str(player)] + point
-        if user_guess not in board:
-            print('Incorrect!')    
+            if user_guess == secret_word:
+                unguess = sum([1 for each in board if each=='*'])
+                data[str(player)] = data[str(player)] + point*unguess
+                print(f"Correct! You get {point*unguess} points.\n\nCongratulations!\n{data}\nWinner - player {player}")
+                break
+            else:
+                print("Incorrect! Next player.")
+    return None
+
+while True:
+    choose = input("\nWant to guess the word? Y or N: ")
+    if choose == 'Y':
+        guess_game()
     else:
-        if user_guess == the_word:
-            unguess = 0
-            for i in board:
-                if i=='*':
-                    unguess+=1
-            print("Correct! Congratulations!")
-            print(f'Winner {player}')
-            point = random.randint(5, 10)
-            data[str(player)] = data[str(player)] + point*unguess
-            print(data)
-            game_over = True
-        else:
-            print("Incorrect, think again.")
-# if the letter is incorrect, show some message
-# if the letter is already guessed, do not change anything
-# randomly add some points if a letter is guessed
-# Have a list of words, and randomly pick a word from a list
-# Two players game. Player one's turn. Guess the word.
+        print("Thanks for your game!")
+        break
